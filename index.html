@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.0.5/pizzip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.22.0/docxtemplater.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <meta charset="UTF-8">
+    <title>DOCX Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.0.5/pizzip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.22.0/docxtemplater.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   </head>
   <body>
     <h1>Generate Your DOCX</h1>
@@ -14,58 +16,55 @@
       <input type="text" id="location" name="location"><br><br>
       <button type="submit">Generate DOCX</button>
     </form>
+
     <script>
       document.getElementById("docForm").addEventListener("submit", function(e) {
         e.preventDefault();
-        // Here we will add code later to process the form data and generate the DOCX.
-        alert(document.getElementById("docForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-  // Get form values
-  var clientName = document.getElementById("clientName").value;
-  var location = document.getElementById("location").value;
 
-  // Load the DOCX template file from your repository
-  fetch("tmp-template.docx")
-    .then(response => response.arrayBuffer())
-    .then(function(data) {
-      // Load the DOCX file as binary content using PizZip
-      var zip = new PizZip(data);
-      // Create a docxtemplater instance with the zip content
-      var doc = new window.docxtemplater(zip, {
-        paragraphLoop: true,
-        linebreaks: true
-      });
+        // Get form values
+        var clientName = document.getElementById("clientName").value;
+        var location = document.getElementById("location").value;
 
-      // Set the data for the placeholders in the template
-      doc.setData({
-        clientName: clientName,
-        location: location
-      });
+        // Load the DOCX template file from your repository
+        fetch("tmp-template.docx")
+          .then(response => response.arrayBuffer())
+          .then(function(data) {
+            // Load the DOCX file as binary content using PizZip
+            var zip = new PizZip(data);
+            // Create a docxtemplater instance with the zip content
+            var doc = new window.docxtemplater(zip, {
+              paragraphLoop: true,
+              linebreaks: true
+            });
 
-      try {
-        // Render the document (replace placeholders with your data)
-        doc.render();
-      } catch (error) {
-        console.error("Error rendering document:", error);
-        alert("An error occurred: " + error.message);
-        return;
-      }
+            // Set the data for the placeholders in the template
+            doc.setData({
+              clientName: clientName,
+              location: location
+            });
 
-      // Generate the new DOCX file as a blob
-      var out = doc.getZip().generate({
-        type: "blob",
-        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      });
+            try {
+              // Render the document (replace placeholders with your data)
+              doc.render();
+            } catch (error) {
+              console.error("Error rendering document:", error);
+              alert("An error occurred: " + error.message);
+              return;
+            }
 
-      // Use FileSaver to download the new file
-      saveAs(out, "generated.docx");
-    })
-    .catch(function(error) {
-      console.error("Error fetching template:", error);
-      alert("Could not fetch the DOCX template. Check console for details.");
-    });
-});
-);
+            // Generate the new DOCX file as a blob
+            var out = doc.getZip().generate({
+              type: "blob",
+              mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            });
+
+            // Use FileSaver to download the new file
+            saveAs(out, "generated.docx");
+          })
+          .catch(function(error) {
+            console.error("Error fetching template:", error);
+            alert("Could not fetch the DOCX template. Check console for details.");
+          });
       });
     </script>
   </body>
